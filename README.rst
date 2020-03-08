@@ -1,9 +1,9 @@
 
-*Stay tuned for library updates and new releases on our site.* `py-orm.com <https://py-orm.com>`_.
+*Stay tuned for library updates and new releases on our site.* `py-orm.com/chapter/django-postgresql-func <https://py-orm.com/chapter/django-postgresql-func>`_.
 
-=====================================================================
-django-postgresql-func: PostgreSQL Functions and Operators for Django
-=====================================================================
+=====================================================================================================================
+django-postgresql-func: PostgreSQL Functions and Operators for Django. Full support for classic Django SQL functions
+=====================================================================================================================
 
 -------------------
 Installing
@@ -28,7 +28,7 @@ Or you can install from source with:
 Examples
 -------------------
 
-``django-postgresql-func``'s examples lives at `<https://py-orm.com/>`_.
+``django-postgresql-func``'s examples lives at `py-orm.com/chapter/django-postgresql-func <https://py-orm.com/chapter/django-postgresql-func>`_.
 
 -------------------
 License
