@@ -2,8 +2,10 @@ from django.db.models import CharField
 from django.db.models.functions import Cast
 from django.db.models.functions.text import *
 
+from django_postgresql_func.text.mixins import SupportIsStringMixin
 
-class BitLen(Func):
+
+class BitLen(SupportIsStringMixin, Transform):
     """
     Number of bits in string
 
@@ -11,12 +13,15 @@ class BitLen(Func):
 
     :param text <string>:
         model field or F() or Value() or string
+    :param is_string <bool>:
+        if True -> 'text' force convert to string
     :return: <integer>
     """
     function = 'BIT_LENGTH'
+    lookup_name = 'bit_length'
 
 
-class CharLen(Func):
+class CharLen(SupportIsStringMixin, Transform):
     """
     Number of characters in string
 
@@ -24,12 +29,15 @@ class CharLen(Func):
 
     :param text <string>:
         model field or F() or Value() or string
+    :param is_string <bool>:
+        if True -> 'text' force convert to string
     :return: <integer>
     """
     function = 'CHAR_LENGTH'
+    lookup_name = 'char_length'
 
 
-class OctetLen(Func):
+class OctetLen(SupportIsStringMixin, Transform):
     """
     Number of bytes in string
 
@@ -37,9 +45,12 @@ class OctetLen(Func):
 
     :param text <string>:
         model field or F() or Value() or string
+    :param is_string <bool>:
+        if True -> 'text' force convert to string
     :return: <integer>
     """
     function = 'OCTET_LENGTH'
+    lookup_name = 'octet_length'
 
 
 class Overlay(Transform):
@@ -48,9 +59,9 @@ class Overlay(Transform):
 
     Overlay(text, substr, start=0, finish=0)
     :param text <string>:
-        model field or F() or Value() or string
+        model field or F() or Value()
     :param substr <string>:
-        model field or F() or Value() or string
+        model field or F() or Value()
     :param start <integer. default=0>:
         model field or F() or Value() or integer
     :return: finish <integer. default=0>:
@@ -132,7 +143,7 @@ class Format(Func):
                                 'the current version.')
 
 
-class InitCap(Func):
+class InitCap(SupportIsStringMixin, Transform):
     """
     Convert the first letter of each word to upper case and the rest to
     lower case. Words are sequences of alphanumeric characters separated
@@ -147,7 +158,7 @@ class InitCap(Func):
     function = 'INITCAP'
 
 
-class QuoteIdent(Func):
+class QuoteIdent(SupportIsStringMixin, Transform):
     """
     Return the given string suitably quoted to be used as an identifier
     in an SQL statement string. Quotes are added only if necessary
@@ -165,7 +176,7 @@ class QuoteIdent(Func):
     function = 'QUOTE_IDENT'
 
 
-class QuoteLiteral(Func):
+class QuoteLiteral(SupportIsStringMixin, Transform):
     """
     Return the given string suitably quoted to be used as a string literal
     in an SQL statement string. Embedded single-quotes and backslashes
@@ -183,7 +194,7 @@ class QuoteLiteral(Func):
     function = 'QUOTE_LITERAL'
 
 
-class QuoteNullable(Func):
+class QuoteNullable(SupportIsStringMixin, Transform):
     """
     Return the given string suitably quoted to be used as a string
     literal in an SQL statement string; or, if the argument is null,
@@ -252,7 +263,7 @@ class StrPos(Transform):
         super().__init__(text, substr, **extra)
 
 
-class ToHex(Func):
+class ToHex(SupportIsStringMixin, Transform):
     """
     *Convert number to its equivalent hexadecimal representation*
 
