@@ -12,7 +12,7 @@ setuptools.setup(
                 "for classic Django SQL functions",
     long_description=long_description,
     long_description_content_type="text/x-rst",
-    url="https://https://github.com/lampofearth/django-postgresql-func",
+    url="https://github.com/lampofearth/django-postgresql-func",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -22,7 +22,7 @@ setuptools.setup(
         "Natural Language :: English",
     ],
     project_urls={
-        'Documentation': 'https://py-orm.com/chapter/django-postgresql-func/',
+        'Documentation': 'https://py-orm.com/chapter/django-postgresql-func',
         'Source': 'https://https://github.com/lampofearth/'
                   'django-postgresql-func/',
         'Tracker': 'https://github.com/lampofearth/'
