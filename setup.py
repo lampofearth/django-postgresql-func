@@ -23,10 +23,8 @@ setuptools.setup(
     ],
     project_urls={
         'Documentation': 'https://py-orm.com/chapter/django-postgresql-func',
-        'Source': 'https://https://github.com/lampofearth/'
-                  'django-postgresql-func/',
-        'Tracker': 'https://github.com/lampofearth/'
-                   'django-postgresql-func/issues/',
+        'Source': 'https://github.com/lampofearth/django-postgresql-func/',
+        'Tracker': 'https://github.com/lampofearth/django-postgresql-func/issues/',
     },
     python_requires=">=3.6",
     install_requires=[
