@@ -5,7 +5,7 @@ with open("README.rst", "r") as fh:
 
 setuptools.setup(
     name="django-postgresql-func",
-    version="0.0.1",
+    version="0.0.2",
     author="lampofearth",
     author_email="lampofearth@gmail.com",
     description="PostgreSQL Functions and Operators for Django. Full support "
