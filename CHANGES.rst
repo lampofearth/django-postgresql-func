@@ -2,7 +2,7 @@
 Changelog
 =========
 
-Release 0.0.1
+Release 0.0.5
 ==============
 *Released 1900-01-01*
 
