@@ -1,9 +1,26 @@
-=========
 Changelog
-=========
+-------------------
+
+Release 0.0.6
+^^^^^^^^^^^^^
+*Released 2020-03-11*
+
+Develop
+
+**New features:**
+
+Implemented String Functions:
+
+- ``Format`` as sql FORMAT(formatstr text [, formatarg "any" [, ...] ])
+
+**Fix and develop:**
+
+- ``Position`` develop
+- ``Btrim`` develop
+
 
 Release 0.0.5
-==============
+^^^^^^^^^^^^^
 *Released 1900-01-01*
 
 First release
