@@ -1,4 +1,4 @@
-from django.db.models import CharField
+from django.db.models import CharField, Expression
 from django.db.models.functions import Cast
 from django.db.models.functions.text import *
 
@@ -7,9 +7,11 @@ from django_postgresql_func.text.mixins import SupportIsStringMixin
 
 class BitLen(SupportIsStringMixin, Transform):
     """
-    Number of bits in string
+    *Number of bits in string*
 
-    BitLen(text)
+    .. code-block:: python
+
+        BitLen(text)
 
     :param text <string>:
         model field or F() or Value() or string
@@ -23,9 +25,11 @@ class BitLen(SupportIsStringMixin, Transform):
 
 class CharLen(SupportIsStringMixin, Transform):
     """
-    Number of characters in string
+    *Number of characters in string*
 
-    CharLen(text)
+    .. code-block:: python
+
+        CharLen(text)
 
     :param text <string>:
         model field or F() or Value() or string
@@ -39,9 +43,11 @@ class CharLen(SupportIsStringMixin, Transform):
 
 class OctetLen(SupportIsStringMixin, Transform):
     """
-    Number of bytes in string
+    *Number of bytes in string*
 
-    OctetLen(text)
+    .. code-block:: python
+
+        OctetLen(text)
 
     :param text <string>:
         model field or F() or Value() or string
@@ -55,9 +61,12 @@ class OctetLen(SupportIsStringMixin, Transform):
 
 class Overlay(Transform):
     """
-    Replace substring
+    *Replace substring*
 
-    Overlay(text, substr, start=0, finish=0)
+    .. code-block:: python
+
+        Overlay(text, substr, start=0, finish=0)
+
     :param text <string>:
         model field or F() or Value()
     :param substr <string>:
@@ -87,72 +96,99 @@ class Overlay(Transform):
         super().__init__(text, substr, start=start, finish=finish, **extra)
 
 
-class Position(Func):
+class Position(Transform):
     """
-    Location of specified substring
+    *Location of specified substring*
 
-    Position(substr, string)
+    .. code-block:: python
+
+        Position(string, substr)
 
     :param text <string>:
         model field or F() or Value() or string
     :param substr <string>:
         model field or F() or Value() or string
+    :param is_string <bool>:
+        if True -> 'substr' force convert to string
     :return: <integer>
     """
     function = 'POSITION'
     arity = 2
     arg_joiner = ' IN '
 
+    def __init__(self, text, substr, is_string=False, **extra):
+        if is_string:
+            substr = Value(substr, output_field=CharField())
+        super().__init__(substr, text, **extra)
+
 
 class Btrim(Func):
     """
-    Remove the longest string consisting only of characters in substr
-    (a space by default) from the start and end of text
+    *Remove the longest string consisting only of characters in substr
+    (a space by default) from the start and end of text*
 
-    Btrim(text, substr)
+    .. code-block:: python
+
+        Btrim(text, substr)
 
     :param text <string>:
         model field or F() or Value() or string
-    :param substr <string. default=' ">:
+    :param substr <string. default=" ">:
         model field or F() or Value() or string
     :return: <string>
     """
     function = 'BTRIM'
 
-    def __init__(self, text, substr=" ", **extra):
-        if not hasattr(substr, 'resolve_expression'):
-            substr = Value(substr)
-
+    def __init__(self, text, substr=" ", is_string=False, **extra):
+        if is_string:
+            substr = Value(substr, output_field=CharField())
+        else:
+            if not hasattr(substr, 'resolve_expression'):
+                substr = Value(substr)
         super().__init__(text, substr, **extra)
 
 
 class Format(Func):
     """
-    Format(formatstr, *formatarg)
-    :param formatstr <string>:
-        model field or F() or Value() or string like sprintf
-    :param *formatarg <iterator>:
-        items like: model field or F() or Value() or string
+     .. code-block:: python
+
+        Format(formatstr, *formatarg)
+
+    :param text <string>:
+        F() - for model field or Value(), string - for string
+    :param params <iterator>:
+        items like: F() - for model field or Value(), string - for string
     :return: string
     """
 
-    template = 'FORMAT'
+    function = 'FORMAT'
 
-    def __init__(self, *expressions, **extra):
-        raise NotSupportedError('This function is not implemented in '
-                                'the current version.')
+    def __init__(self, text, params, output_field=None, **extra):
+        if not hasattr(text, 'resolve_expression'):
+            text = Value(text)
+        
+        params = (Value(i) if not hasattr(i, 'resolve_expression')
+                     else i for i in params)
+
+        output_field = CharField() if output_field is None else output_field
+
+        super().__init__(text, *params, output_field=output_field, **extra)
 
 
 class InitCap(SupportIsStringMixin, Transform):
     """
-    Convert the first letter of each word to upper case and the rest to
+    *Convert the first letter of each word to upper case and the rest to
     lower case. Words are sequences of alphanumeric characters separated
-    by non-alphanumeric characters.
+    by non-alphanumeric characters.*
 
-    InitCap(text)
+    .. code-block:: python
+
+        InitCap(text)
 
     :param text <string>:
         model field or F() or Value() or string
+    :param is_string <bool>:
+        if True -> 'text' force convert to string
     :return: <string>
     """
     function = 'INITCAP'
@@ -160,17 +196,19 @@ class InitCap(SupportIsStringMixin, Transform):
 
 class QuoteIdent(SupportIsStringMixin, Transform):
     """
-    Return the given string suitably quoted to be used as an identifier
+    *Return the given string suitably quoted to be used as an identifier
     in an SQL statement string. Quotes are added only if necessary
     (i.e., if the string contains non-identifier characters or would
-    be case-folded). Embedded quotes are properly doubled.
+    be case-folded). Embedded quotes are properly doubled.*
 
-    QuoteIdent(text)
+    .. code-block:: python
+
+        QuoteIdent(text)
 
     :param text <string>:
         model field or F() or Value() or string
-    :param substr <string>:
-        model field or F() or Value() or string
+    :param is_string <bool>:
+        if True -> 'text' force convert to string
     :return: <string>
     """
     function = 'QUOTE_IDENT'
@@ -178,17 +216,19 @@ class QuoteIdent(SupportIsStringMixin, Transform):
 
 class QuoteLiteral(SupportIsStringMixin, Transform):
     """
-    Return the given string suitably quoted to be used as a string literal
+    *Return the given string suitably quoted to be used as a string literal
     in an SQL statement string. Embedded single-quotes and backslashes
     are properly doubled. Note that quote_literal returns null on null
-    input; if the argument might be null, quote_nullable is often more suitable.
+    input; if the argument might be null, quote_nullable is often more suitable.*
 
-    QuoteLiteral(text)
+    .. code-block:: python
+
+        QuoteLiteral(text)
 
     :param text <string>:
         model field or F() or Value() or string
-    :param substr <string>:
-        model field or F() or Value() or string
+    :param is_string <bool>:
+        if True -> 'text' force convert to string
     :return: <string>
     """
     function = 'QUOTE_LITERAL'
@@ -196,16 +236,19 @@ class QuoteLiteral(SupportIsStringMixin, Transform):
 
 class QuoteNullable(SupportIsStringMixin, Transform):
     """
-    Return the given string suitably quoted to be used as a string
+    *Return the given string suitably quoted to be used as a string
     literal in an SQL statement string; or, if the argument is null,
-    return NULL. Embedded single-quotes and backslashes are properly doubled.
+    return NULL. Embedded single-quotes and backslashes are properly
+    doubled.*
 
-    QuoteNullable(text)
+    .. code-block:: python
+
+        QuoteNullable(text)
 
     :param text <string>:
         model field or F() or Value() or string
-    :param substr <string>:
-        model field or F() or Value() or string
+    :param is_string <bool>:
+        if True -> 'text' force convert to string
     :return: <string>
     """
     function = 'QUOTE_NULLABLE'
@@ -213,9 +256,11 @@ class QuoteNullable(SupportIsStringMixin, Transform):
 
 class SplitPart(Transform):
     """
-    Split text on delimiter and return the given field (counting from one)
+    *Split text on delimiter and return the given field (counting from one)*
 
-    SplitPart(text, delimiter, return_position)
+    .. code-block:: python
+
+        SplitPart(text, delimiter, return_position)
 
     :param text <string>:
         model field or F() or Value() or string
@@ -241,10 +286,12 @@ class SplitPart(Transform):
 
 class StrPos(Transform):
     """
-    Location of specified substring
-    (same as position(substr, string), but note the reversed argument order)
+    *Location of specified substring
+    (same as position(substr, string), but note the reversed argument order)*
 
-    StrPos(string, substring)
+    .. code-block:: python
+
+        StrPos(string, substring)
 
     :param text <string>:
         model field or F() or Value() or string
